@@ -1,150 +1,149 @@
-# Custom Event Hook Library
+# @stainless-code/react-custom-events
 
 This library provides utilities to simplify working with custom DOM events in React, allowing you to dispatch and listen for events in a declarative and type-safe manner.
 
----
-
 ## Features
 
-- **Type-safe custom event handling**: Define the payload type for your custom events.
-- **Declarative React hooks**: Easily manage event listeners with React’s lifecycle.
-- **Optional hooks customization**: Specify when to start/stop listening and include dependencies for event handling.
-
----
+- Typesafe
+- Reusable
+- Simple API
+- Centralised event dispatcher and listener
 
 ## Installation
 
-Install the library via npm or yarn:
+### npm
 
 ```bash
-# npm
-npm i @stainless-code/react-custom-events
+npm install @stainless-code/react-custom-events
+```
 
-# yarn
+### yarn
+
+```bash
 yarn add @stainless-code/react-custom-events
+```
 
-# pnpm
+### pnpm
+
+```bash
 pnpm add @stainless-code/react-custom-events
+```
 
-# bun
+### bun
+
+```bash
 bun add @stainless-code/react-custom-events
 ```
 
----
+## Usage
+
+### 1. Basic
+
+```tsx
+import { createCustomEvent } from "@stainless-code/react-custom-events";
+
+// Create event
+const useMyEvent = createCustomEvent<string>("my-event");
+
+function MyComponent() {
+  // Listen for the event
+  useMyEvent((payload) => console.log("Event received with payload:", payload));
+
+  return (
+    // Dispatch event
+    <button onClick={() => useMyEvent.dispatch("hello!")}>
+      Dispatch event
+    </button>
+  );
+}
+```
+
+### 2. With options and dependency list
+
+```tsx
+import { createCustomEvent } from "@stainless-code/react-custom-events";
+import { useState } from "react";
+
+// Create event
+const useMyEvent = createCustomEvent<string>("my-event");
+
+function MyComponent() {
+  const [enabled, setEnabled] = useState(true);
+
+  // Listen for the event
+  useMyEvent(
+    (payload, event) =>
+      console.log("Event received with payload:", payload, event),
+    {
+      listen: enabled, // Control whether the listener is active
+      onStartListening: () => console.log("Started listening"),
+      onStopListening: () => console.log("Stopped listening"),
+    },
+    [enabled], // Re-subscribe when `enabled` changes
+  );
+
+  return (
+    <>
+      <button onClick={() => setEnabled(!enabled)}>
+        {enabled ? "Disable" : "Enable"} event listener
+      </button>
+      <button onClick={() => useMyEvent.dispatch("hello!")}>
+        Dispatch event
+      </button>
+    </>
+  );
+}
+```
+
+## Typesafety
+
+```tsx
+const useMyEvent = createCustomEvent<string>("my-event");
+
+// dispatching
+useMyEvent.dispatch("Valid string payload"); // ✅ Correct type
+useMyEvent.dispatch(123); // ❌ TypeScript error: Expected 'string', got 'number'
+
+// listening
+useMyEvent((payload) => {
+  console.log(payload.toUpperCase()); // ✅ Correct method for string
+  console.log(payload * 2); // ❌ TypeScript error: 'string' is not a number
+});
+```
 
 ## API
 
-### `createCustomEvent<Payload>(eventName: string)`
+### `createCustomEvent()`
 
-Creates a custom event hook and dispatcher for a given event name.
+Creates a custom event with a given name and returns a hook for listening to it and a `dispatch` function for triggering the event.
 
-#### Parameters:
+| Parameter   | Type     | Description                   | Default    |
+| ----------- | -------- | ----------------------------- | ---------- |
+| `eventName` | `string` | The name of the custom event. | (required) |
 
-- `eventName`: The name of the custom event to create.
+#### Returns
 
-#### Returns:
-
-A React hook with the following properties:
-
-- **Hook function**: A hook to listen for the custom event.
-- **dispatch(payload, eventInitDict?)**: Dispatches the custom event with the given payload.
+- `useCustomEventListener` with `eventName` prepopulated along with a `dispatch` method to trigger the event and the `eventName` property.
 
 ---
 
-### Hook: `useCustomEventListener<Payload>`
+### `useCustomEventListener()`
 
-This hook listens for custom events and triggers a callback when the event occurs.
+Custom hook to listen for a custom event and handle the payload.
 
-#### Parameters:
-
-1. `eventName`: The name of the event to listen for.
-2. `onListen(payload, event)`: Callback invoked with the event payload and the `CustomEvent` object.
-3. `options?`: (Optional) Object containing:
-   - `listen`: A boolean to toggle event listening.
-   - `onStartListening`: A callback triggered when the hook starts listening.
-   - `onStopListening`: A callback triggered when the hook stops listening.
-4. `deps?`: (Optional) Dependency list to control re-subscription.
-
----
-
-## Example Usage
-
-### Creating a Custom Event
-
-```typescript
-import { createCustomEvent } from "@stainless-code/react-custom-events";
-
-// Define a custom event hook with a typed payload
-const useMyEvent = createCustomEvent<{ age: number }>("myCustomEvent");
-
-// Dispatch the event
-useMyEvent.dispatch({ age: 28 });
-```
-
-### Listening for Custom Events
-
-```typescript
-// Listen for the event
-useMyEvent((payload) => {
-  console.log(`Received age: ${payload.age}`);
-});
-
-// Advanced usage with options
-useMyEvent(
-  (payload) => console.log(`Received age: ${payload.age}`),
-  {
-    listen: true, // Start listening immediately
-    onStartListening: () => console.log("Started listening"),
-    onStopListening: () => console.log("Stopped listening"),
-  },
-  [
-    /* dependencies */
-  ],
-);
-```
-
----
-
-## How It Works
-
-1. **`createCustomEvent`**:
-
-   - Creates a custom event dispatcher and corresponding hook for easy integration.
-   - The `dispatch` method triggers a DOM `CustomEvent` with the provided payload.
-
-2. **`useCustomEventListener`**:
-   - Handles the lifecycle of adding and removing event listeners in a React-friendly manner.
-   - Automatically cleans up listeners when the component unmounts or dependencies change.
-
----
-
-## Type Safety
-
-Leverage TypeScript to enforce strict type checking for your event payloads, ensuring reliability and reducing runtime errors.
-
----
-
-## Example in Context
-
-```typescript
-const useUserLoginEvent = createCustomEvent<{ userId: string }>("userLogin");
-
-// Dispatch the event
-useUserLoginEvent.dispatch({ userId: "abc123" });
-
-// Listen for the event
-useUserLoginEvent((payload) =>
-  console.log(`User logged in: ${payload.userId}`),
-);
-```
-
----
+| Parameter                  | Type                                                      | Description                                              | Default            |
+| -------------------------- | --------------------------------------------------------- | -------------------------------------------------------- | ------------------ |
+| `eventName`                | `string`                                                  | The name of the custom event to listen for.              | (required)         |
+| `onListen`                 | `(payload: Payload, event: CustomEvent<Payload>) => void` | Callback to handle the event payload and event object.   | (required)         |
+| `options` (optional)       | `Object`                                                  | Additional configuration for the event listener.         | `{ listen: true }` |
+| `options.listen`           | `boolean`                                                 | Whether the listener should be active (default: `true`). | `true`             |
+| `options.onStartListening` | `() => void`                                              | Callback when the listener starts.                       | `undefined`        |
+| `options.onStopListening`  | `() => void`                                              | Callback when the listener stops.                        | `undefined`        |
+| `deps` (optional)          | `DependencyList`                                          | Dependency list for re-subscribing to the event.         | `undefined`        |
 
 ## Contributing
 
 Feel free to submit issues or PRs to improve the library!
-
----
 
 ## License
 
