@@ -18,16 +18,16 @@ Install the library via npm or yarn:
 
 ```bash
 # npm
-npm i @stainless/react-custom-events
+npm i @stainless-code/react-custom-events
 
 # yarn
-yarn add @stainless/react-custom-events
+yarn add @stainless-code/react-custom-events
 
 # pnpm
-pnpm add @stainless/react-custom-events
+pnpm add @stainless-code/react-custom-events
 
 # bun
-bun add @stainless/react-custom-events
+bun add @stainless-code/react-custom-events
 ```
 
 ---
@@ -72,7 +72,7 @@ This hook listens for custom events and triggers a callback when the event occur
 ### Creating a Custom Event
 
 ```typescript
-import { createCustomEvent } from "@stainless/react-custom-events";
+import { createCustomEvent } from "@stainless-code/react-custom-events";
 
 // Define a custom event hook with a typed payload
 const useMyEvent = createCustomEvent<{ age: number }>("myCustomEvent");
