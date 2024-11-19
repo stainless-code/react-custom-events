@@ -1,6 +1,6 @@
 {
   "name": "@stainless-code/react-custom-events",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Elegantly use custom events in React",
   "keywords": [
     "custom-event-listener",
