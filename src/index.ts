@@ -11,7 +11,7 @@ type OmitFirstParam<T extends (...args: any[]) => any> = T extends (
   ? (...args: R) => Ret
   : never;
 
-// const DOCUMENT = typeof document !== "undefined" ? document : undefined;
+const DOCUMENT = typeof document !== "undefined" ? document : undefined;
 
 /**
  * Creates a custom event with an associated React hook for listening.
