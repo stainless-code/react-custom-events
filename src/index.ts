@@ -11,6 +11,8 @@ type OmitFirstParam<T extends (...args: any[]) => any> = T extends (
   ? (...args: R) => Ret
   : never;
 
+const DOCUMENT = typeof document !== "undefined" ? document : undefined;
+
 /**
  * Creates a custom event with an associated React hook for listening.
  *
@@ -25,7 +27,7 @@ export function createCustomEvent<Payload>(eventName: string) {
    * @param {EventInit} [eventInitDict] - Additional options for the event.
    */
   function dispatch(payload: Payload, eventInitDict?: EventInit) {
-    document.dispatchEvent(
+    DOCUMENT?.dispatchEvent(
       new CustomEvent<Payload>(eventName, {
         ...eventInitDict,
         detail: payload,
@@ -105,11 +107,11 @@ export function useCustomEventListener<Payload>(
     }
 
     onStartListening?.();
-    document.addEventListener(eventName, handleCallback);
+    DOCUMENT?.addEventListener(eventName, handleCallback);
 
     return () => {
       onStopListening?.();
-      document.removeEventListener(eventName, handleCallback);
+      DOCUMENT?.removeEventListener(eventName, handleCallback);
     };
   }, getDepList());
 }
