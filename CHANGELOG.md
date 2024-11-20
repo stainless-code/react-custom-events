@@ -1,5 +1,11 @@
 # @stainless-code/react-custom-events
 
+## 1.0.3
+
+### Patch Changes
+
+- [#12](https://github.com/stainless-code/react-custom-events/pull/12) [`8626598`](https://github.com/stainless-code/react-custom-events/commit/86265989e32594fa2922b79568b8e0c303383c76) Thanks [@SutuSebastian](https://github.com/SutuSebastian)! - add "use client" directive
+
 ## 1.0.2
 
 ### Patch Changes
