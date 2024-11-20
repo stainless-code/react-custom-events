@@ -12,11 +12,3 @@ runs:
     - name: Install packages
       shell: bash
       run: bun install
-
-    - name: Check Branch
-      shell: bash
-      run: |
-        if [[ "${{ github.event.pull_request.head.ref }}" == "changeset-release/main" ]]; then
-          echo "Bypassing checks for changeset-release/main"
-          exit 0
-        fi
