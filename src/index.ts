@@ -1,3 +1,5 @@
+"use client";
+
 import type { DependencyList } from "react";
 import { useEffect } from "react";
 
