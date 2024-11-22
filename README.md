@@ -143,7 +143,9 @@ Custom hook to listen for a custom event and handle the payload.
 
 ## Contributing
 
-Feel free to submit issues or PRs to improve the library!
+Feel free to submit issues or pull requests to improve the library. Every bit of help is appreciated. 💖
+
+[Read the contribution guidelines](./CONTRIBUTING.md).
 
 ## License
 
